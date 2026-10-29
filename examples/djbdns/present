@@ -1,0 +1,34 @@
+#!/bin/sh
+# ACME DNS-01 present helper for djbdns/tinydns.
+# Written for POSIX ash (/bin/sh on FreeBSD and many Linux systems); no bash.
+# Invoked as: present <fqdn> <value>
+#
+# Plug in your local tinydns data workflow below. Typical outline:
+#   1. Strip trailing dots from FQDN
+#   2. Add/update a TXT record for that name with VALUE
+#   3. Rebuild the tinydns data.cdb (e.g. tinydns-data) and signal tinydns
+#
+# This stub exits 0 so you can test the proxy end-to-end before wiring DNS.
+
+set -eu
+
+FQDN="${1:?fqdn required}"
+VALUE="${2:?value required}"
+
+# Strip one trailing dot if present.
+case "$FQDN" in
+*. ) FQDN="${FQDN%.}" ;;
+esac
+
+# TINYDNS_ROOT="${TINYDNS_ROOT:-/service/tinydns/root}"
+# DATA="${TINYDNS_ROOT}/data"
+#
+# # tinydns data line for TXT: 'fqdn:text:ttl
+# tmp="${DATA}.acme.$$"
+# grep -v "^'${FQDN}:" "$DATA" >"$tmp" || true
+# printf "'%s:%s:300\n" "$FQDN" "$VALUE" >>"$tmp"
+# mv "$tmp" "$DATA"
+# (cd "$TINYDNS_ROOT" && make)   # or: tinydns-data < data > data.cdb
+
+echo "present: would set TXT ${FQDN}=${VALUE}" >&2
+exit 0

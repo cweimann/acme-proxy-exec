@@ -1,0 +1,4 @@
+/acme-proxy-exec
+*.exe
+acmeproxy.yaml
+*.tmp

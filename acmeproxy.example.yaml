@@ -1,0 +1,22 @@
+# Copy to acmeproxy.yaml and chmod 0600.
+# Paths under scripts must be absolute and executable before `serve`.
+
+listen: ":9090"
+
+# Optional TLS for the proxy itself (or terminate TLS elsewhere).
+# tls:
+#   cert: /etc/acme-proxy-exec/cert.pem
+#   key: /etc/acme-proxy-exec/key.pem
+
+scripts:
+  present: /usr/local/libexec/acme-djbdns/present
+  cleanup: /usr/local/libexec/acme-djbdns/cleanup
+  timeout: 30s
+
+users:
+  # Create hashes with: acme-proxy-exec hash-password
+  # Or: acme-proxy-exec add-user -user bob -domain bob.example.com
+  - username: bob
+    password_hash: "$2a$10$REPLACE_ME_WITH_BCRYPT_HASH"
+    domains:
+      - bob.example.com

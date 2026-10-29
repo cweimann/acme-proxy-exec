@@ -1,0 +1,26 @@
+#!/bin/sh
+# ACME DNS-01 cleanup helper for djbdns/tinydns.
+# Written for POSIX ash (/bin/sh on FreeBSD and many Linux systems); no bash.
+# Invoked as: cleanup <fqdn> <value>
+#
+# Remove the TXT record added by present, rebuild data.cdb, and reload tinydns.
+
+set -eu
+
+FQDN="${1:?fqdn required}"
+VALUE="${2:?value required}"
+
+case "$FQDN" in
+*. ) FQDN="${FQDN%.}" ;;
+esac
+
+# TINYDNS_ROOT="${TINYDNS_ROOT:-/service/tinydns/root}"
+# DATA="${TINYDNS_ROOT}/data"
+#
+# tmp="${DATA}.acme.$$"
+# grep -v "^'${FQDN}:" "$DATA" >"$tmp" || true
+# mv "$tmp" "$DATA"
+# (cd "$TINYDNS_ROOT" && make)
+
+echo "cleanup: would remove TXT ${FQDN}=${VALUE}" >&2
+exit 0
