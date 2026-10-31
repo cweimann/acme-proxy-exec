@@ -33,8 +33,9 @@ func New(a *auth.Authenticator, runner *execdns.Runner, logger *log.Logger) *Ser
 	}
 	s := &Server{auth: a, runner: runner, logger: logger}
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /present", s.handlePresent)
-	mux.HandleFunc("POST /cleanup", s.handleCleanup)
+	// Path-only patterns (compatible with Go 1.19; method checked in handlers).
+	mux.HandleFunc("/present", s.handlePresent)
+	mux.HandleFunc("/cleanup", s.handleCleanup)
 	mux.HandleFunc("/", s.handleOther)
 	s.mux = mux
 	return s
@@ -51,10 +52,18 @@ func (s *Server) handleOther(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (s *Server) handlePresent(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	s.doAction(w, r, "present")
 }
 
 func (s *Server) handleCleanup(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	s.doAction(w, r, "cleanup")
 }
 
