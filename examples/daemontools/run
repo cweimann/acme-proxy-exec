@@ -1,0 +1,16 @@
+#!/bin/sh
+# Sample daemontools (or runit/s6) run script for acme-proxy-exec.
+#
+# Install roughly as:
+#   mkdir -p /var/service/acme-proxy-exec
+#   cp examples/daemontools/run /var/service/acme-proxy-exec/run
+#   chmod 755 /var/service/acme-proxy-exec/run
+#   ln -s /var/service/acme-proxy-exec /service/acme-proxy-exec
+#
+# Adjust binary path, config path, and the setuidgid user for your host.
+# Pair with a multilog service under log/ if you want supervised logging.
+
+exec 2>&1
+exec setuidgid acmeproxy \
+  /usr/local/bin/acme-proxy-exec serve \
+  -config /usr/local/etc/acme-proxy-exec/acmeproxy.yaml

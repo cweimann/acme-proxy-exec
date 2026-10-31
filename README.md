@@ -60,6 +60,12 @@ See [`examples/djbdns/`](examples/djbdns/) for POSIX ash (`#!/bin/sh`) stub pres
 
 Or set `ACMEPROXY_CONFIG`. Intended for internal/LAN use (same guidance as other ACMEProxy servers). Optional `tls.cert` / `tls.key` in the config terminate TLS on the proxy itself.
 
+Sample supervised / init scripts (adjust paths and the `acmeproxy` user):
+
+- [`examples/daemontools/run`](examples/daemontools/run) — daemontools / runit / s6 `run`
+- [`examples/rc.d/acme_proxy_exec`](examples/rc.d/acme_proxy_exec) — FreeBSD `/usr/local/etc/rc.d`
+- [`examples/systemd/acme-proxy-exec.service`](examples/systemd/acme-proxy-exec.service) — Linux systemd unit
+
 ## Caddy
 
 ```

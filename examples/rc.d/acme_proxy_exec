@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Sample FreeBSD rc.d script for acme-proxy-exec.
+# Install as /usr/local/etc/rc.d/acme_proxy_exec and chmod 755.
+#
+# In /etc/rc.conf:
+#   acme_proxy_exec_enable="YES"
+# Optional overrides:
+#   acme_proxy_exec_user="acmeproxy"
+#   acme_proxy_exec_config="/usr/local/etc/acme-proxy-exec/acmeproxy.yaml"
+#
+
+# PROVIDE: acme_proxy_exec
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="acme_proxy_exec"
+desc="ACMEProxy-compatible DNS-01 present/cleanup server"
+rcvar="${name}_enable"
+
+load_rc_config $name
+
+: ${acme_proxy_exec_enable:="NO"}
+: ${acme_proxy_exec_user:="acmeproxy"}
+: ${acme_proxy_exec_config:="/usr/local/etc/acme-proxy-exec/acmeproxy.yaml"}
+
+pidfile="/var/run/${name}.pid"
+procname="/usr/local/bin/acme-proxy-exec"
+command="/usr/sbin/daemon"
+command_args="-c -f -p ${pidfile} -u ${acme_proxy_exec_user} \
+	${procname} serve -config ${acme_proxy_exec_config}"
+
+run_rc_command "$1"

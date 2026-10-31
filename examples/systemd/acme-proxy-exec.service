@@ -1,0 +1,31 @@
+# Sample systemd unit for acme-proxy-exec.
+#
+# Install roughly as:
+#   cp examples/systemd/acme-proxy-exec.service /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable --now acme-proxy-exec
+#
+# Adjust User/Group, ExecStart paths, and config path for your host.
+# Create the dedicated user first (e.g. useradd -r -s /usr/sbin/nologin acmeproxy).
+# Send SIGHUP (systemctl reload) to reload users/scripts without dropping the listener.
+
+[Unit]
+Description=acme-proxy-exec ACMEProxy DNS-01 server
+Documentation=https://github.com/andmore/acme-proxy-exec
+After=network.target
+
+[Service]
+Type=simple
+User=acmeproxy
+Group=acmeproxy
+ExecStart=/usr/local/bin/acme-proxy-exec serve -config /usr/local/etc/acme-proxy-exec/acmeproxy.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=2
+
+# Keep hardening modest: present/cleanup scripts often need write access to DNS data.
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
